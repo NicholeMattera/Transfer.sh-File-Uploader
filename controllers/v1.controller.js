@@ -23,7 +23,7 @@ module.exports.postUpload = (req, res) => {
     if (req.influxdb) {
         req.influxdb.writeMeasurement('data', [{
             tags: { },
-            fields: { size: parseInt(eq.header('content-length'), 10) },
+            fields: { size: parseInt(req.header('content-length'), 10) },
             timestamp: new Date()
         }])
     }
