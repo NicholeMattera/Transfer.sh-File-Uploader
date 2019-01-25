@@ -12,6 +12,7 @@
   "dependencies": {
     "connect-busboy": "0.0.2",
     "express": "^4.16.4",
+    "influx": "^5.0.7",
     "request": "^2.88.0"
   }
 }

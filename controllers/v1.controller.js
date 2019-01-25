@@ -15,15 +15,23 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-const request = require('request');
+const request = require('request')
 
 module.exports.postUpload = (req, res) => {
     let fileFound = false
 
+    if (req.influxdb) {
+        req.influxdb.writeMeasurement('data', [{
+            tags: { },
+            fields: { size: req.header('content-length') },
+            timestamp: new Date()
+        }])
+    }
+
     req.pipe(req.busboy)
     req.busboy.on('file', (fieldName, file, fileName) => {
         if (fieldName == 'file') {
-            fileFound = true;
+            fileFound = true
             
             request.put(`https://transfer.sh/${ fileName }`, { body: file }, (err, httpResponse, body) => {
                 if (err) {
@@ -49,7 +57,7 @@ module.exports.postUpload = (req, res) => {
         if (!fileFound) {
             res.status(400)
             res.send('Bad Request')
-            return;
+            return
         }
     })
 }
