@@ -1,4 +1,3 @@
 {
-    "portNumber": 9002,
-    "influxdb": "http://127.0.0.1:8086/TransferShFileUploader"
+    "portNumber": 9002
 }

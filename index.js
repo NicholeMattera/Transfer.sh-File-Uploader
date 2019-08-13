@@ -17,15 +17,8 @@
 
 const express = require('express')
 const busboy = require('connect-busboy')
-const influx = require('influx')
 const v1 = require('./routes/v1.route')
 const config = require('./config.json')
-
-// Setup Influx
-let influxdb = null
-if (config.influxdb) {
-    influxdb = new influx.InfluxDB(config.influxdb)
-}
 
 const app = express()
 app.use(busboy())
@@ -35,23 +28,6 @@ app.set('etag', false)
 app.use((req, res, next) => {
     res.removeHeader('X-Powered-By')
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
-    next()
-})
-
-// Record traffic to InfluxDB
-app.use((req, res, next) => {
-    if (!influxdb) {
-        next()
-    }
-
-    req.influxdb = influxdb
-
-    influxdb.writeMeasurement('visit', [{
-        tags: { path: req.path },
-        fields: { count: 1 },
-        timestamp: new Date()
-    }])
-
     next()
 })
 
